@@ -36,9 +36,25 @@ namespace lab1TAu
                 textbox.Text += lines[i];
                 textbox.Text += Environment.NewLine;
                 i++;
-
             }
             file.Close();
+        }
+        public void ReadBox(System.Windows.Forms.TextBox textbox, System.Windows.Forms.TextBox textbox2)
+        {
+            int count = textbox.Text.Split(new String[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length;
+            String[] s = textbox.Text.Split(new String[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+            bool end = false;
+            lines = new string[count];
+            int i = 0;
+            textbox2.Text = "";
+            while (i != count)
+            {
+                lines[i] = s[i] + '\n';
+                textbox2.Text += lines[i];
+                textbox2.Text += Environment.NewLine;
+                i++;
+
+            }
         }
 
         public void Analyse(System.Windows.Forms.TextBox textbox)

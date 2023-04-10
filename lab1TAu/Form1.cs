@@ -7,7 +7,7 @@ namespace lab1TAu
     public partial class Form1 : Form
     {
         AnalyseWorker worker;
-        List<Token> tokens = new List<Token>();
+        List<Token> tokens;
         public Form1()
         {
             worker = new AnalyseWorker();
@@ -34,6 +34,7 @@ namespace lab1TAu
             string str;
             string type;
             Token token;
+            tokens = new List<Token>();
             for (int i = 0; i < worker.buf.Count; i++)
             {
                 str = (worker.buf[i].Split(' ')[0]);
@@ -80,6 +81,13 @@ namespace lab1TAu
                 MessageBox.Show("Analyse succesful!");
             else
                 MessageBox.Show("Analyse failed...");
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            worker = new AnalyseWorker(textBox2.Text);
+            worker.ReadBox(textBox3, textBox1);
+            MessageBox.Show("Reading successfully!");
         }
     }
 }
