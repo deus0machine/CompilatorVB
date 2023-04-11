@@ -27,6 +27,7 @@ namespace lab1TAu
             worker = new AnalyseWorker(textBox2.Text);
             worker.ReadFile(textBox3);
             MessageBox.Show("Opening successfully!");
+            button2.Enabled = true;
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -79,8 +80,6 @@ namespace lab1TAu
             AT.Start();
             if (AT.Succes == true)
                 MessageBox.Show("Analyse succesful!");
-            else
-                MessageBox.Show("Analyse failed...");
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -88,6 +87,7 @@ namespace lab1TAu
             worker = new AnalyseWorker(textBox2.Text);
             worker.ReadBox(textBox3, textBox1);
             MessageBox.Show("Reading successfully!");
+            button2.Enabled = true;
         }
     }
 }

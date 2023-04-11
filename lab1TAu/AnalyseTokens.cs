@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Authentication.ExtendedProtection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace lab1TAu
@@ -36,12 +30,12 @@ namespace lab1TAu
         {
             if (i<tokens.Count-1)
             {
-            i++;
+                i++;
             }
         }
         public void Error(Token.TokenType Ozhidal, Token.TokenType Poluch)
         {
-            throw new Exception($"Ожидался один из TokenType: {Ozhidal}, а получено: {Poluch} {i}");
+            throw new Exception($"Ожидалось: {Ozhidal}, а получено: {Poluch}");
         }
         public void Finish()
         {
@@ -54,7 +48,13 @@ namespace lab1TAu
                 i++;
             }
         }
-
+        public void SkipEnter()
+        {
+            while (tokens[i].Type == Token.TokenType.ENTER && i < tokens.Count - 1)
+            {
+                Next();
+            }
+        }
         public void Program()
         {
             Succes = false;
@@ -77,6 +77,7 @@ namespace lab1TAu
             if (tokens[i].Type != Token.TokenType.ENTER)
                 Error(Token.TokenType.ENTER, tokens[i].Type);
             Next();
+            SkipEnter();
             DopOb();
         }
         public void DopOb()
@@ -94,6 +95,7 @@ namespace lab1TAu
             if (tokens[i].Type != Token.TokenType.ENTER)
                 Error(Token.TokenType.ENTER, tokens[i].Type);
             Next();
+            SkipEnter();
             DopOper();
         }
         public void Oper()
@@ -116,6 +118,7 @@ namespace lab1TAu
                 tokens[i].Type != Token.TokenType.END &&
                 tokens[i].Type != Token.TokenType.ELSE)
                 Error(Token.TokenType.ENTER, tokens[i].Type); // Варианты
+            SkipEnter();
             if (tokens[i].Type == Token.TokenType.IF || tokens[i].Type == Token.TokenType.IDENTIFIER)
                 OperList();
             if (tokens[i].Type == Token.TokenType.ENTER)
@@ -179,6 +182,7 @@ namespace lab1TAu
             if (tokens[i].Type != Token.TokenType.ENTER)
                 Error(Token.TokenType.ENTER, tokens[i].Type);
             Next();
+            SkipEnter();
             OperList();
             IfElse();
             if (tokens[i].Type != Token.TokenType.END)
@@ -191,7 +195,8 @@ namespace lab1TAu
         public void IfElse()
         {
             if (tokens[i].Type != Token.TokenType.ELSE &&
-                tokens[i].Type != Token.TokenType.ENTER)
+                tokens[i].Type != Token.TokenType.ENTER &&
+                tokens[i].Type != Token.TokenType.END)
                 Error(Token.TokenType.ELSE, tokens[i].Type); //Варианты
             if (tokens[i].Type == Token.TokenType.ELSE)
             {
@@ -199,6 +204,7 @@ namespace lab1TAu
                 if (tokens[i].Type != Token.TokenType.ENTER)
                     Error(Token.TokenType.ENTER, tokens[i].Type);
                 Next();
+                SkipEnter();
                 OperList();
             }
         }

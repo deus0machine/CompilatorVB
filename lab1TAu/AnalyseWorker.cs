@@ -41,9 +41,8 @@ namespace lab1TAu
         }
         public void ReadBox(System.Windows.Forms.TextBox textbox, System.Windows.Forms.TextBox textbox2)
         {
-            int count = textbox.Text.Split(new String[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length;
-            String[] s = textbox.Text.Split(new String[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            bool end = false;
+            int count = textbox.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Length;
+            string[] s = textbox.Text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
             lines = new string[count];
             int i = 0;
             textbox2.Text = "";

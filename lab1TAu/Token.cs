@@ -72,6 +72,7 @@ namespace lab1TAu
             foreach (var t in list)
             {
                 textbox.Text += $"{i++}. {t} ";
+                //textbox.Text += $"{t} ";
                 textbox.Text += Environment.NewLine;
             }
         }
