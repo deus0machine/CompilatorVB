@@ -72,6 +72,7 @@ namespace lab1TAu
             }
             Token.PrintTokens(textBox1, tokens);
             button4.Enabled = true;
+            button6.Enabled = true;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -88,6 +89,14 @@ namespace lab1TAu
             worker.ReadBox(textBox3, textBox1);
             MessageBox.Show("Reading successfully!");
             button2.Enabled = true;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            AnalyseTokensUp AT = new AnalyseTokensUp(tokens);
+            AT.Start();
+            if (AT.Succes == true)
+                MessageBox.Show("Analyse succesful!");
         }
     }
 }

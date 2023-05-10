@@ -39,6 +39,7 @@
             this.button5 = new System.Windows.Forms.Button();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.button6 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBox1
@@ -125,9 +126,9 @@
             this.button4.Enabled = false;
             this.button4.Location = new System.Drawing.Point(280, 82);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(81, 37);
+            this.button4.Size = new System.Drawing.Size(81, 49);
             this.button4.TabIndex = 7;
-            this.button4.Text = "Analyse Tokens";
+            this.button4.Text = "Analyse Tokens Down";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
@@ -163,11 +164,24 @@
             this.label2.TabIndex = 10;
             this.label2.Text = "Parsing expressions:";
             // 
+            // button6
+            // 
+            this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button6.Enabled = false;
+            this.button6.Location = new System.Drawing.Point(280, 137);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(81, 37);
+            this.button6.TabIndex = 11;
+            this.button6.Text = "Analyse Tokens Up";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(935, 325);
+            this.Controls.Add(this.button6);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBox4);
             this.Controls.Add(this.button5);
@@ -199,6 +213,7 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button6;
     }
 }
 

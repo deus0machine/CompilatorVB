@@ -22,7 +22,7 @@ namespace lab1TAu
             AS, DIM, THEN, INTEGER, BOOL, LITERAL, IDENTIFIER, END,
             IF, ELSE, TRUE, FALSE, PLUS, MORE, LESS,
             MINUS, EQUAL, MULTIPLY, RPAR, LPAR, ENTER, DIVISION, COMMA,
-            STRING
+            STRING, EXPR, NETERM
         }
 
         public static Dictionary<string, TokenType> SpecialWords = new Dictionary<string, TokenType>()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using static lab1TAu.Token;
 
 namespace lab1TAu
@@ -15,6 +16,7 @@ namespace lab1TAu
         int nextLex = 0;
         int state = 0;
         bool isEnd = false;
+        public bool Succes = false;
         public AnalyseTokensUp(List<Token> vvodtoken)
         {
             tokens = vvodtoken;
@@ -49,8 +51,16 @@ namespace lab1TAu
             stateStack.Push(state);
             this.state = state;
         }
+        private void Expression()
+        {
+            nextLex += 1;
+            Token k = new Token(TokenType.EXPR);
+            lexemStack.Push(k);
+        }
         void State0()
         {
+            if (lexemStack.Count == 0)
+                Shift();
             switch (lexemStack.Peek().Type)
             {
                 case TokenType.NETERM:
@@ -64,7 +74,7 @@ namespace lab1TAu
                             GoToState(1);
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -72,7 +82,7 @@ namespace lab1TAu
                     GoToState(2);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.DIM, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -85,6 +95,11 @@ namespace lab1TAu
                     {
                         case "<спис.опер>":
                             GoToState(3);
+                            if (lexemStack.Count > 2)
+                            {
+                                Reduce(2, "<спис.опер>");
+                                GoToState(1);
+                            }
                             break;
                         case "<опер>":
                             GoToState(4);
@@ -99,7 +114,7 @@ namespace lab1TAu
                             Shift();
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -110,7 +125,7 @@ namespace lab1TAu
                     GoToState(20);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.IDENTIFIER, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -125,25 +140,25 @@ namespace lab1TAu
                             GoToState(5);
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
                 case TokenType.IDENTIFIER:
-                    GoToState(19);
+                    GoToState(6);
                     break;
                 case TokenType.DIM:
                     Shift();
                     break;
                 default:
-                    Error();
+                    Error(TokenType.IDENTIFIER, lexemStack.Peek().Type);
                     break;
             }
         }
         void State3() 
         {
             if (lexemStack.Peek().Type == TokenType.NETERM && lexemStack.Peek().Value == "<спис.опер>")
-                Reduce(1, "<программа>");
+                Reduce(2, "<программа>");
             else
                 throw new Exception($"Ожидалось правило <спис.опер>, но было получено {lexemStack.Peek().Type} {lexemStack.Peek().Value}");
         }
@@ -158,7 +173,7 @@ namespace lab1TAu
                             Shift();
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -166,7 +181,7 @@ namespace lab1TAu
                     GoToState(15);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.ENTER, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -181,7 +196,7 @@ namespace lab1TAu
                             Shift();
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -189,12 +204,31 @@ namespace lab1TAu
                     GoToState(7);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.AS, lexemStack.Peek().Type);
                     break;
             }
         }
         void State6() 
-        { 
+        {
+            switch (lexemStack.Peek().Type)
+            {
+                case TokenType.IDENTIFIER:
+                    Shift();
+                    if (lexemStack.Peek().Type == TokenType.AS)
+                    {
+                        lexemStack.Pop();
+                        Reduce(1, "<спис.идент>");
+                        lexemStack.Push(new Token(TokenType.AS));
+                        GoToState(5);
+                    }
+                    break;
+                case TokenType.COMMA:
+                    GoToState(13);
+                    break;
+                default:
+                    Error(TokenType.IDENTIFIER, lexemStack.Peek().Type);
+                    break;
+            }
         } 
         void State7() 
         {
@@ -207,7 +241,7 @@ namespace lab1TAu
                             GoToState(8);
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -224,7 +258,7 @@ namespace lab1TAu
                     GoToState(10);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.INTEGER, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -239,7 +273,7 @@ namespace lab1TAu
                             Shift();
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -247,7 +281,7 @@ namespace lab1TAu
                     GoToState(12);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.ENTER, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -290,7 +324,7 @@ namespace lab1TAu
                             GoToState(14);
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -301,7 +335,7 @@ namespace lab1TAu
                     Shift();
                     break;
                 default:
-                    Error();
+                    Error(TokenType.IDENTIFIER, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -312,11 +346,59 @@ namespace lab1TAu
             else
                 throw new Exception($"Ожидалась лексема ENTER, но было получено {lexemStack.Peek().Type} {lexemStack.Peek().Value}");
         }
-        void State15() { }
+        void State15() 
+        {
+            switch (lexemStack.Peek().Type)
+            {
+                case TokenType.NETERM:
+                    switch (lexemStack.Peek().Value)
+                    {
+                        case "<спис.опер>":
+                            GoToState(16);
+                            break;
+                        default:
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
+                            break;
+                    }
+                    break;
+                case TokenType.ENTER:
+                    if (nextLex == tokens.Count)
+                    {
+                        Reduce(2, "<спис.опер>");
+                        break;
+                    }
+                    if (GetLexeme(nextLex).Type == TokenType.IF || GetLexeme(nextLex).Type == TokenType.IDENTIFIER)
+                    {
+                        Reduce(2, "<спис.опер>");
+                        Shift();
+                    }
+                    if (GetLexeme(nextLex).Type == TokenType.ELSE || GetLexeme(nextLex).Type == TokenType.END)
+                    {
+                        Reduce(2, "<спис.опер>");
+                    }
+                    /*if (lexemStack.Peek().Type == TokenType.IF || lexemStack.Peek().Type == TokenType.IDENTIFIER)
+                    {
+                        stateStack.Pop();
+                        stateStack.Pop();
+                        state = stateStack.Peek();
+                    }
+
+                    if (lexemStack.Peek().Type == TokenType.ELSE)
+                    {
+                        lexemStack.Pop();
+                        Reduce(2, "<спис.опер>");
+                        GoToState(15);
+                    }*/
+                    break;
+                default:
+                    Error(TokenType.IDENTIFIER, lexemStack.Peek().Type);
+                    break;
+            }
+        }
         void State16()
         {
             if (lexemStack.Peek().Type == TokenType.NETERM && lexemStack.Peek().Value == "<спис.опер>")
-                Reduce(3, "<опер>");
+                Reduce(3, "<спис.опер>");
             else
                 throw new Exception($"Ожидалось правило <спис.опер>, но было получено {lexemStack.Peek().Type} {lexemStack.Peek().Value}");
         }
@@ -345,7 +427,7 @@ namespace lab1TAu
                     GoToState(21);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.EQUAL, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -363,7 +445,7 @@ namespace lab1TAu
                             GoToState(25);
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -377,12 +459,33 @@ namespace lab1TAu
                     GoToState(27);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.LITERAL, lexemStack.Peek().Type);
                     break;
             }
         }
-        void State21() { }
-        void State22() { }
+        void State21() 
+        {
+            switch (lexemStack.Peek().Type)
+            {
+                case TokenType.EQUAL:
+                    //Shift();
+                    Expression();
+                    break;
+                case TokenType.EXPR:
+                    GoToState(22);
+                    break;
+                default:
+                    Error(TokenType.EQUAL, lexemStack.Peek().Type);
+                    break;
+            }
+        }
+        void State22() 
+        {
+            if (lexemStack.Peek().Type == TokenType.EXPR)
+                Reduce(3, "<присвоен>");
+            else
+                Error(TokenType.EXPR, lexemStack.Peek().Type);
+        }
         void State23() 
         {
             switch (lexemStack.Peek().Type)
@@ -394,7 +497,7 @@ namespace lab1TAu
                             Shift();
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -402,7 +505,7 @@ namespace lab1TAu
                     GoToState(24);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.THEN, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -417,7 +520,7 @@ namespace lab1TAu
                     GoToState(36);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.ENTER, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -435,7 +538,7 @@ namespace lab1TAu
                             GoToState(28);
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -458,21 +561,21 @@ namespace lab1TAu
                     GoToState(34);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.PLUS, lexemStack.Peek().Type);
                     break;
             }
         }
         void State26() 
         {
             if (lexemStack.Peek().Type == TokenType.IDENTIFIER)
-                Reduce(1, "<слож.операнд>");
+                Reduce(1, "<операнд>");
             else
                 throw new Exception($"Ожидался терминал IDENTIFIER, но было получено {lexemStack.Peek().Type} {lexemStack.Peek().Value}");
         }
         void State27() 
         {
             if (lexemStack.Peek().Type == TokenType.LITERAL)
-                Reduce(1, "<слож.операнд>");
+                Reduce(1, "<операнд>");
             else
                 throw new Exception($"Ожидался терминал LITERAL, но было получено {lexemStack.Peek().Type} {lexemStack.Peek().Value}");
         }
@@ -490,7 +593,7 @@ namespace lab1TAu
                             GoToState(35);
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -501,7 +604,7 @@ namespace lab1TAu
                     GoToState(27);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.LITERAL, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -536,22 +639,22 @@ namespace lab1TAu
         }
         void State33() 
         {
-            if (lexemStack.Peek().Type == TokenType.LESS)
-                Reduce(1, "<знак>");
-            else
-                throw new Exception($"Ожидался терминал LESS, но было получено {lexemStack.Peek().Type} {lexemStack.Peek().Value}");
-        }
-        void State34() 
-        {
             if (lexemStack.Peek().Type == TokenType.MORE)
                 Reduce(1, "<знак>");
             else
                 throw new Exception($"Ожидался терминал MORE, но было получено {lexemStack.Peek().Type} {lexemStack.Peek().Value}");
         }
+        void State34() 
+        {
+            if (lexemStack.Peek().Type == TokenType.LESS)
+                Reduce(1, "<знак>");
+            else
+                throw new Exception($"Ожидался терминал LESS, но было получено {lexemStack.Peek().Type} {lexemStack.Peek().Value}");
+        }
         void State35() 
         {
             if (lexemStack.Peek().Type == TokenType.NETERM && lexemStack.Peek().Value == "<операнд>")
-                Reduce(3, "<условн>");
+                Reduce(3, "<слож.операнд>");
             else
                 throw new Exception($"Ожидалась правило <операнд>, но было получено {lexemStack.Peek().Type} {lexemStack.Peek().Value}");
         }
@@ -568,16 +671,31 @@ namespace lab1TAu
                         case "<опер>":
                             GoToState(4);
                             break;
+                        case "<присвоен>":
+                            GoToState(17);
+                            break;
+                        case "<условн>":
+                            GoToState(18);
+                            break;
+                        case "<спис.объяв>":
+                            Shift();
+                            break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
                 case TokenType.ENTER:
                     Shift();
                     break;
+                case TokenType.IDENTIFIER:
+                    GoToState(19);
+                    break;
+                case TokenType.IF:
+                    GoToState(20);
+                    break;
                 default:
-                    Error();
+                    Error(TokenType.ENTER, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -592,7 +710,7 @@ namespace lab1TAu
                             Shift();
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -603,7 +721,7 @@ namespace lab1TAu
                     GoToState(39);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.ELSE, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -618,7 +736,7 @@ namespace lab1TAu
                     GoToState(40);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.END, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -633,7 +751,7 @@ namespace lab1TAu
                     GoToState(41);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.ENTER, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -657,16 +775,28 @@ namespace lab1TAu
                         case "<опер>":
                             GoToState(4);
                             break;
+                        case "<присвоен>":
+                            GoToState(17);
+                            break;
+                        case "<условн>":
+                            GoToState(18);
+                            break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
                 case TokenType.ENTER:
                     Shift();
                     break;
+                case TokenType.IDENTIFIER:
+                    GoToState(19);
+                    break;
+                case TokenType.IF:
+                    GoToState(20);
+                    break;
                 default:
-                    Error();
+                    Error(TokenType.ENTER, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -681,7 +811,7 @@ namespace lab1TAu
                             Shift();
                             break;
                         default:
-                            Error();
+                            Error(TokenType.NETERM, lexemStack.Peek().Type);
                             break;
                     }
                     break;
@@ -689,7 +819,7 @@ namespace lab1TAu
                     GoToState(43);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.END, lexemStack.Peek().Type);
                     break;
             }
         }
@@ -704,16 +834,176 @@ namespace lab1TAu
                     GoToState(44);
                     break;
                 default:
-                    Error();
+                    Error(TokenType.IF, lexemStack.Peek().Type);
                     break;
             }
         }
         void State44() 
         {
             if (lexemStack.Peek().Type == TokenType.IF)
-                Reduce(10, "<опер>");
+            {
+                Reduce(11, "<опер>");
+                GoToState(1);
+            }    
+                
             else
                 throw new Exception($"Ожидался терминал IF, но было получено {lexemStack.Peek().Type} {lexemStack.Peek().Value}");
+        }
+        public void Start()
+        {
+            stateStack.Push(0);
+            try
+            {
+                Succes = false;
+                while (isEnd != true)
+                {
+                    switch (state)
+                    {
+                        case 0:
+                            State0();
+                            break;
+                        case 1:
+                            State1();
+                            break;
+                        case 2:
+                            State2();
+                            break;
+                        case 3:
+                            State3();
+                            break;
+                        case 4:
+                            State4();
+                            break;
+                        case 5:
+                            State5();
+                            break;
+                        case 6:
+                            State6();
+                            break;
+                        case 7:
+                            State7();
+                            break;
+                        case 8:
+                            State8();
+                            break;
+                        case 9:
+                            State9();
+                            break;
+                        case 10:
+                            State10();
+                            break;
+                        case 11:
+                            State11();
+                            break;
+                        case 12:
+                            State12();
+                            break;
+                        case 13:
+                            State13();
+                            break;
+                        case 14:
+                            State14();
+                            break;
+                        case 15:
+                            State15();
+                            break;
+                        case 16:
+                            State16();
+                            break;
+                        case 17:
+                            State17();
+                            break;
+                        case 18:
+                            State18();
+                            break;
+                        case 19:
+                            State19();
+                            break;
+                        case 20:
+                            State20();
+                            break;
+                        case 21:
+                            State21();
+                            break;
+                        case 22:
+                            State22();
+                            break;
+                        case 23:
+                            State23();
+                            break;
+                        case 24:
+                            State24();
+                            break;
+                        case 25:
+                            State25();
+                            break;
+                        case 26:
+                            State26();
+                            break;
+                        case 27:
+                            State27();
+                            break;
+                        case 28:
+                            State28();
+                            break;
+                        case 29:
+                            State29();
+                            break;
+                        case 30:
+                            State30();
+                            break;
+                        case 31:
+                            State31();
+                            break;
+                        case 32:
+                            State32();
+                            break;
+                        case 33:
+                            State33();
+                            break;
+                        case 34:
+                            State34();
+                            break;
+                        case 35:
+                            State35();
+                            break;
+                        case 36:
+                            State36();
+                            break;
+                        case 37:
+                            State37();
+                            break;
+                        case 38:
+                            State38();
+                            break;
+                        case 39:
+                            State39();
+                            break;
+                        case 40:
+                            State40();
+                            break;
+                        case 41:
+                            State41();
+                            break;
+                        case 42:
+                            State42();
+                            break;
+                        case 43:
+                            State43();
+                            break;
+                        case 44:
+                            State44();
+                            break;
+                    }
+                }
+                Succes = true;
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+                MessageBox.Show($"Errror! {ex.Message}");
+            }
         }
 
     }
