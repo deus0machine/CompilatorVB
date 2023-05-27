@@ -94,7 +94,22 @@ namespace lab1TAu
         private void button6_Click(object sender, EventArgs e)
         {
             AnalyseTokensUp AT = new AnalyseTokensUp(tokens);
+            dataGridView1.DataSource = null;
+            dataGridView1.RowCount = 1;
+            int index = 0;
             AT.Start();
+            foreach (List<Three> list in AT.listtroek)
+            {
+                foreach (Three item in list)
+                {
+                    dataGridView1.RowCount++;
+                    dataGridView1[0, index].Value = $"m{index}";
+                    dataGridView1[2, index].Value = $"{item.znak}";
+                    dataGridView1[1, index].Value = $"{item.operand1.Value}";
+                    dataGridView1[3, index].Value = $"{item.operand2.Value}";
+                    index++;
+                }
+            }
             if (AT.Succes == true)
                 MessageBox.Show("Analyse succesful!");
         }

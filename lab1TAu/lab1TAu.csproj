@@ -49,6 +49,7 @@
     <Compile Include="AnalyseTokens.cs" />
     <Compile Include="AnalyseTokensUp.cs" />
     <Compile Include="AnalyseWorker.cs" />
+    <Compile Include="ExpressionAnalyse.cs" />
     <Compile Include="TranslExpressions.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static lab1TAu.Token;
 
@@ -13,6 +10,8 @@ namespace lab1TAu
         List<Token> tokens = new List<Token>();
         Stack<Token> lexemStack = new Stack<Token>();
         Stack<int> stateStack = new Stack<int>();
+        public List<List<Three>> listtroek = new List<List<Three>>();
+        public ExpressionAnalyse exprAn;
         int nextLex = 0;
         int state = 0;
         bool isEnd = false;
@@ -23,7 +22,7 @@ namespace lab1TAu
         }
         public void Error(Token.TokenType Ozhidal, Token.TokenType Poluch)
         {
-            throw new Exception($"Ожидалось: {Ozhidal}, а получено: {Poluch}");
+            throw new Exception($"Ожидалось: {Ozhidal}, а получено: {Poluch} {nextLex} {lexemStack.Peek().Value}");
         }
         void Shift()
         {
@@ -53,7 +52,39 @@ namespace lab1TAu
         }
         private void Expression()
         {
-            nextLex += 1;
+             List<Token> listExpr = new List<Token>();
+             while (lexemStack.Peek().Type != TokenType.ENTER)
+             {
+                 if (lexemStack.Peek().Type == TokenType.IDENTIFIER ||
+                     lexemStack.Peek().Type == TokenType.LITERAL ||
+                     lexemStack.Peek().Type == TokenType.DIVISION ||
+                     lexemStack.Peek().Type == TokenType.LPAR ||
+                     lexemStack.Peek().Type == TokenType.RPAR ||
+                     lexemStack.Peek().Type == TokenType.MINUS ||
+                     lexemStack.Peek().Type == TokenType.PLUS ||
+                     lexemStack.Peek().Type == TokenType.MULTIPLY)
+                 {
+                     listExpr.Add(lexemStack.Pop());
+                     Shift();
+                 }
+                 else
+                 {
+                     Error(TokenType.MINUS, lexemStack.Peek().Type);
+                 }
+             }
+            exprAn = new ExpressionAnalyse(listExpr);
+            exprAn.Start();
+            listtroek.Add(exprAn.troyka);
+            if (lexemStack.Peek().Type == TokenType.ENTER)
+            {
+                lexemStack.Pop();
+                nextLex--;
+            }
+            else
+            {
+                Error(TokenType.ENTER, lexemStack.Peek().Type);
+            }
+            //nextLex++;
             Token k = new Token(TokenType.EXPR);
             lexemStack.Push(k);
         }
@@ -468,7 +499,7 @@ namespace lab1TAu
             switch (lexemStack.Peek().Type)
             {
                 case TokenType.EQUAL:
-                    //Shift();
+                    Shift();
                     Expression();
                     break;
                 case TokenType.EXPR:
@@ -842,8 +873,8 @@ namespace lab1TAu
         {
             if (lexemStack.Peek().Type == TokenType.IF)
             {
-                Reduce(11, "<опер>");
-                GoToState(1);
+                Reduce(10, "<условн>");
+                //GoToState(1);
             }    
                 
             else
