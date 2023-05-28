@@ -29,6 +29,32 @@ namespace lab1TAu
             lexemStack.Push(GetLexeme(nextLex));
             nextLex++;
         }
+        public string ConvertToken(Token element)
+        {
+            string res ="";
+            switch (element.Type)
+            {
+                case (TokenType.MINUS):
+                    res = "-";
+                    break;
+                case (TokenType.PLUS):
+                    res = "-";
+                    break;
+                case (TokenType.MULTIPLY):
+                    res = "*";
+                    break;
+                case (TokenType.DIVISION):
+                    res = "/";
+                    break;
+                case (TokenType.MORE):
+                    res = ">";
+                    break;
+                case (TokenType.LESS):
+                    res = "<";
+                    break;
+            }
+            return res;
+        }
         private Token GetLexeme(int nextLex)
         {
             return tokens[nextLex];
@@ -53,6 +79,10 @@ namespace lab1TAu
         private void Expression()
         {
              List<Token> listExpr = new List<Token>();
+            if (lexemStack.Peek().Type == TokenType.ENTER)
+            {
+                Error(TokenType.LITERAL, lexemStack.Peek().Type);
+            }
              while (lexemStack.Peek().Type != TokenType.ENTER)
              {
                  if (lexemStack.Peek().Type == TokenType.IDENTIFIER ||
@@ -874,7 +904,6 @@ namespace lab1TAu
             if (lexemStack.Peek().Type == TokenType.IF)
             {
                 Reduce(10, "<условн>");
-                //GoToState(1);
             }    
                 
             else

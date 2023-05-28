@@ -41,8 +41,8 @@
             this.button6 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -177,8 +177,8 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
-            this.Column2,
             this.Column4,
+            this.Column2,
             this.Column3});
             this.dataGridView1.Location = new System.Drawing.Point(634, 82);
             this.dataGridView1.Name = "dataGridView1";
@@ -191,17 +191,17 @@
             this.Column1.Name = "Column1";
             this.Column1.Width = 50;
             // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Операнд 1";
-            this.Column2.Name = "Column2";
-            this.Column2.Width = 60;
-            // 
             // Column4
             // 
             this.Column4.HeaderText = "Операция";
             this.Column4.Name = "Column4";
             this.Column4.Width = 60;
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Операнд 1";
+            this.Column2.Name = "Column2";
+            this.Column2.Width = 60;
             // 
             // Column3
             // 
@@ -227,7 +227,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Траслятор языка Visual Basic";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -249,8 +249,8 @@
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
     }
 }

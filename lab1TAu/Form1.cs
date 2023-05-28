@@ -96,17 +96,19 @@ namespace lab1TAu
             AnalyseTokensUp AT = new AnalyseTokensUp(tokens);
             dataGridView1.DataSource = null;
             dataGridView1.RowCount = 1;
-            int index = 0;
             AT.Start();
+            int index = 0;
             foreach (List<Three> list in AT.listtroek)
             {
+            int ind = 0;
                 foreach (Three item in list)
                 {
                     dataGridView1.RowCount++;
-                    dataGridView1[0, index].Value = $"m{index}";
-                    dataGridView1[2, index].Value = $"{item.znak}";
-                    dataGridView1[1, index].Value = $"{item.operand1.Value}";
+                    dataGridView1[0, index].Value = $"m{ind}";
+                    dataGridView1[1, index].Value = $"{AT.ConvertToken(item.znak)}";
+                    dataGridView1[2, index].Value = $"{item.operand1.Value}";
                     dataGridView1[3, index].Value = $"{item.operand2.Value}";
+                    ind++;
                     index++;
                 }
             }

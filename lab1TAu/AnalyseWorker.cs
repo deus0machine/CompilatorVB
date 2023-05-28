@@ -48,7 +48,7 @@ namespace lab1TAu
             textbox2.Text = "";
             while (i != count)
             {
-                lines[i] = s[i] + '\n';
+                lines[i] = s[i];// + '\n';
                 textbox2.Text += lines[i];
                 textbox2.Text += Environment.NewLine;
                 i++;
